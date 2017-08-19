@@ -155,11 +155,12 @@ function setMarketInfoList() {
   var template = document.querySelector('#lodge-template');
   var ownersAmount = ownersInfo.length;
   var replacedElem = document.querySelector('.dialog__panel');
-  for (var i = 1; i < ownersAmount; i++) {
+  var shiftElement = createDescriptionDom(template, ownersInfo[0]);
+  replacedElem.parentNode.replaceChild(shiftElement, replacedElem);
+  for (var i = 0; i < ownersAmount; i++) {
     fragment.appendChild(createPinDomElement(ownersInfo[i]));
   }
   document.querySelector('.tokyo__pin-map').appendChild(fragment);
-  replacedElem.parentNode.replaceChild(createDescriptionDom(template, ownersInfo[0]), replacedElem);
 }
 
 /* --------------------------------------------------------------------------------------------------------------------
