@@ -3,7 +3,9 @@
 * OFFER_TITLES - описание помещения;
 * OFFER_OPTION - удобства квартиры
 * OFFEr_TYPE - тип помещения
-* OFFER_CHECKIN_CHECKOUT -  время заезда , выезда*/
+* OFFER_CHECKIN_CHECKOUT -  время заезда , выезда
+* OFER_AMOUNT - количество предложений */
+var OFFER_AMOUNT = 8;
 var OFFER_TITLES = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
 var OFFER_OPTIONS = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var OFFER_TYPE = ['flat', 'house', 'bungalo'];
@@ -148,7 +150,7 @@ function createDescriptionDom(apartmentTemplate, description) {
 
 /* размещение DOM-элементов на странице */
 function setMarketInfoList() {
-  var ownersInfo = createArrOfObject(8);
+  var ownersInfo = createArrOfObject(OFFER_AMOUNT);
   var fragment = document.createDocumentFragment();
   var template = document.querySelector('#lodge-template');
   var ownersAmount = ownersInfo.length;
