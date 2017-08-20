@@ -16,10 +16,10 @@ var OFFFER_CHECKIN_CHECKOUT = ['12:00', '13:00', '14:00'];
 * ------------------------------------------------------------------------------------------------------------------*/
 /* функция перетасовки значений в массиве */
 function shuffle(array) {
-  function compareRandom() {
+  array.sort(function () {
     return Math.random() - 0.5;
   }
-  array.sort(compareRandom);
+  );
   return array;
 }
 
