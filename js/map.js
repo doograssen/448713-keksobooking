@@ -68,7 +68,6 @@ function setFeatureRange() {
 /* функция возращающая объект offer - описание помещения */
 function setOffer(currentAuthor, locationCoordinate) {
   /* возращаем объект*/
-  console.log(OFFER_TITLES[currentAuthor]);
   return {
     title: OFFER_TITLES[currentAuthor],
     address: locationCoordinate.x + ', ' + locationCoordinate.y,
