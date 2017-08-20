@@ -2,10 +2,9 @@
 /*  ------------------------- Массивы констант ------------------------------------------------------------------------
 * OFFER_TITLES - описание помещения;
 * OFFER_OPTION - удобства квартиры
-* OFFEr_TYPE - тип помещения
+* OFFER_TYPE - тип помещения
 * OFFER_CHECKIN_CHECKOUT -  время заезда , выезда
-* OFER_AMOUNT - количество предложений */
-var OFFER_AMOUNT = 8;
+* --------------------------------------------------------------------------------------------------------------------*/
 var OFFER_TITLES = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
 var OFFER_OPTIONS = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var OFFER_TYPE = ['flat', 'house', 'bungalo'];
@@ -83,18 +82,23 @@ function setOffer(currentAuthor, locationCoordinate) {
   };
 }
 
+/* Заполняем объявление одного из владельцев */
+function getApartmentInfo(index, authorArray) {
+  var apartmentLocation = getLocation();// получаем координаты помещения на карте
+  return {
+    author: getAvatar(index + 1),
+    offer: setOffer(authorArray[index], apartmentLocation),
+    location: apartmentLocation
+  };
+}
+
 /* массив объектов  с описание помещений от владельцев */
-function getApartments(amount) {
+function getApartments() {
+  var amount = 8; // кол-во объявлений
   var ownerGroup = []; // массив объектов с описанием помещений
   var ownersApartments = createArr(amount); // массив связывающий случайно владельца и помещение
-  var apartmentLocation;
   for (var i = 0; i < amount; i++) {
-    apartmentLocation = getLocation();// получаем координаты помещения на карте
-    ownerGroup[i] = {
-      author: getAvatar(i + 1),
-      offer: setOffer(ownersApartments[i], apartmentLocation),
-      location: apartmentLocation
-    };
+    ownerGroup[i] = getApartmentInfo(i, ownersApartments);
   }
   return ownerGroup;
 }
@@ -155,7 +159,7 @@ function createDescription(description) {
 
 /* размещение DOM-элементов на странице */
 function setMarketInfoList() {
-  var ownersInfo = getApartments(OFFER_AMOUNT);
+  var ownersInfo = getApartments();
   var fragment = document.createDocumentFragment();
   var ownersAmount = ownersInfo.length;
   createDescription(ownersInfo[0]);
