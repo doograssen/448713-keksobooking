@@ -41,32 +41,34 @@ function getRandomFromRange(min, max) {
 }
 
 /* получаем объект с атрибутом с ссылкой на картинку */
-function setAvatar(currentAuthor) {
+function getAvatar(currentAuthor) {
   return {avatar: 'img/avatars/user0' + currentAuthor + '.png'};
 }
 
 /* получаем объект с атрибутами x y (случайно сгенерированные координаты)  */
-function setLocation() {
+function getLocation() {
   return {
     x: getRandomFromRange(300, 900),
-    y: getRandomFromRange(100, 500)
+    y: getRandomFromRange(200, 600)
   };
+}
+
+/* случайные удобства помещений */
+function setFeatureRange() {
+  var optionLength = OFFER_OPTIONS.length;
+  var featureAmount = getRandomFromRange(1, optionLength);
+  var featureArray = createArr(optionLength);
+  featureArray.length = featureAmount;
+  for (var i = 0; i < featureAmount; i++) {
+    featureArray[i] = OFFER_OPTIONS[featureArray[i]];
+  }
+  return featureArray;
 }
 
 /* функция возращающая объект offer - описание помещения */
 function setOffer(currentAuthor, locationCoordinate) {
-  /* случайные удобства помещений */
-  function setFeatureRange() {
-    var optionLength = OFFER_OPTIONS.length;
-    var featureAmount = getRandomFromRange(1, optionLength);
-    var featureArray = createArr(optionLength);
-    featureArray.length = featureAmount;
-    for (var i = 0; i < featureAmount; i++) {
-      featureArray[i] = OFFER_OPTIONS[featureArray[i]];
-    }
-    return featureArray;
-  }
   /* возращаем объект*/
+  console.log(OFFER_TITLES[currentAuthor]);
   return {
     title: OFFER_TITLES[currentAuthor],
     address: locationCoordinate.x + ', ' + locationCoordinate.y,
@@ -83,14 +85,14 @@ function setOffer(currentAuthor, locationCoordinate) {
 }
 
 /* массив объектов  с описание помещений от владельцев */
-function createArrOfObject(amount) {
+function getApartments(amount) {
   var ownerGroup = []; // массив объектов с описанием помещений
   var ownersApartments = createArr(amount); // массив связывающий случайно владельца и помещение
   var apartmentLocation;
   for (var i = 0; i < amount; i++) {
-    apartmentLocation = setLocation();// получаем координаты помещения на карте
+    apartmentLocation = getLocation();// получаем координаты помещения на карте
     ownerGroup[i] = {
-      author: setAvatar(i + 1),
+      author: getAvatar(i + 1),
       offer: setOffer(ownersApartments[i], apartmentLocation),
       location: apartmentLocation
     };
@@ -113,27 +115,31 @@ function createPinDomElement(oneOfOwners) {
   return pinElement;
 }
 
+/* тип помещения */
+function getType(type) {
+  switch (type) {
+    case 'flat': return 'Квартира';
+    case 'bungalo': return 'Бунгало';
+    case 'house': return 'Дом';
+  }
+  return false;
+}
+
+/* элементы-значки удобств */
+function getFeatures(featuresList) {
+  var listLength = featuresList.length;
+  var featureString = '';
+  for (var i = 0; i < listLength; i++) {
+    featureString += '<span class="feature__image feature__image--' + featuresList[i] + '"></span>';
+  }
+  return featureString;
+}
+
 /* блок с описанием помещения */
-function createDescriptionDom(apartmentTemplate, description) {
-  /* тип помещения */
-  function getType(type) {
-    switch (type) {
-      case 'flat': return 'Квартира';
-      case 'bungalo': return 'Бунгало';
-      case 'house': return 'Дом';
-    }
-    return false;
-  }
-  /* элементы-значки удобств */
-  function getFeatures(featuresList) {
-    var listLength = featuresList.length;
-    var featureString = '';
-    for (var i = 0; i < listLength; i++) {
-      featureString += '<span class="feature__image feature__image--' + featuresList[i] + '"></span>';
-    }
-    return featureString;
-  }
-  var element = apartmentTemplate.content.querySelector('.dialog__panel').cloneNode(true);
+function createDescription(description) {
+  var replacedElem = document.querySelector('.dialog__panel');
+  var template = document.querySelector('#lodge-template');
+  var element = template.content.querySelector('.dialog__panel').cloneNode(true);
   element.querySelector('.lodge__title').textContent = description.offer.title;
   element.querySelector('.lodge__address').textContent = description.offer.address;
   element.querySelector('.lodge__price').innerHTML = description.offer.price + '&#x20bd;/ночь';
@@ -145,18 +151,15 @@ function createDescriptionDom(apartmentTemplate, description) {
   element.querySelector('.lodge__features').innerHTML = getFeatures(description.offer.features);
   element.querySelector('.lodge__description').textContent = description.offer.description;
   document.querySelector('.dialog__title').src = description.author.avatar;
-  return element;
+  replacedElem.parentNode.replaceChild(element, replacedElem); // заменяем описание по умолчанию на описание первого объявления
 }
 
 /* размещение DOM-элементов на странице */
 function setMarketInfoList() {
-  var ownersInfo = createArrOfObject(OFFER_AMOUNT);
+  var ownersInfo = getApartments(OFFER_AMOUNT);
   var fragment = document.createDocumentFragment();
-  var template = document.querySelector('#lodge-template');
   var ownersAmount = ownersInfo.length;
-  var replacedElem = document.querySelector('.dialog__panel');
-  var shiftElement = createDescriptionDom(template, ownersInfo[0]);
-  replacedElem.parentNode.replaceChild(shiftElement, replacedElem);
+  createDescription(ownersInfo[0]);
   for (var i = 0; i < ownersAmount; i++) {
     fragment.appendChild(createPinDomElement(ownersInfo[i]));
   }
@@ -167,4 +170,3 @@ function setMarketInfoList() {
 *   Вызов функци-сеятеля пинов
 * -------------------------------------------------------------------------------------------------------------------*/
 setMarketInfoList();
-
