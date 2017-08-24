@@ -9,7 +9,8 @@ var OFFER_TITLES = ['Большая уютная квартира', 'Мален�
 var OFFER_OPTIONS = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var OFFER_TYPE = ['flat', 'house', 'bungalo'];
 var OFFFER_CHECKIN_CHECKOUT = ['12:00', '13:00', '14:00'];
-
+var ESC_KEYCODE = 27;
+var ENTER_KEYCODE = 13;
 /* -------------------------------------------------------------------------------------------------------------------
 *   Вспомогательные функции генерации массивов случайных значений
 * ------------------------------------------------------------------------------------------------------------------*/
@@ -108,13 +109,15 @@ function getApartments() {
 * -------------------------------------------------------------------------------------------------------------------*/
 
 /* описание элемента пина на карте */
-function createPinDomElement(oneOfOwners) {
+function createPinDomElement(oneOfOwners, ind) {
   var pinElement = document.createElement('div');
   pinElement.className = 'pin';
   pinElement.innerHTML = '<img class="rounded" width="40" height="40">';
   pinElement.style.left = oneOfOwners.location.x - 28 + 'px';
   pinElement.style.top = oneOfOwners.location.y - 75 + 'px';
+  pinElement.setAttribute('data-index', ind);
   pinElement.querySelector('.rounded').src = oneOfOwners.author.avatar;
+  pinElement.tabIndex = ind + 1;
   return pinElement;
 }
 
@@ -157,16 +160,87 @@ function createDescription(description) {
   replacedElem.parentNode.replaceChild(element, replacedElem); // заменяем описание по умолчанию на описание первого объявления
 }
 
+/* -------- функции-слушатели событий  ----------------------------*/
+
+// функция, которая делает пин активным
+function makeActivePin(e) {
+  var activePin = document.querySelector('.pin--active');
+  if (activePin) {
+    activePin.classList.remove('pin--active');
+  }
+  if (e.target.nodeName === 'IMG') {
+    e.target.parentNode.classList.add('pin--active');
+  } else {
+    e.target.classList.add('pin--active');
+  }
+}
+
+// функция, обработчик щелчка на пине
+function showDialogFunc(evt) {
+  makeActivePin(evt);
+  var currentPin = document.querySelector('.pin--active');
+  createDescription(ownersInfo[currentPin.dataset.index]);
+  document.querySelector('.dialog').classList.remove('hidden');
+}
+
+// функция создаия слушателей событий на пинах
+function addPinListeners() {
+  var pinElements = document.querySelectorAll('.pin');
+  var pinAmount = pinElements.length;
+  for (var i = 0; i < pinAmount; i++) {
+    pinElements[i].addEventListener('click', showDialogFunc, true);
+    pinElements[i].addEventListener('keydown', function (evt) {
+      if (evt.keyCode === ENTER_KEYCODE) {
+        showDialogFunc(evt);
+      }
+    });
+    pinElements[i].addEventListener('focus', function (evt) {
+      evt.target.classList.add('pin--active');
+    });
+    pinElements[i].addEventListener('blur', function (evt) {
+      evt.target.classList.remove('pin--active');
+    });
+  }
+}
+
+// нажатие ESC
+var onDialogEscPress = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    closeDialog();
+  }
+};
+
+// закрытие окна диалога  с описание  помещения
+function closeDialog() {
+  var dialog = document.querySelector('.dialog');
+  dialog.classList.add('hidden');
+  dialog.removeEventListener('click', onDialogEscPress);
+  document.querySelector('.pin--active').classList.remove('pin--active');
+}
+
+// функция добавления  слушателей событий  в диалоге
+function addDialogListener() {
+  var closeDialogElem = document.querySelector('.dialog__close');
+  closeDialogElem.addEventListener('click', closeDialog);
+  document.addEventListener('keydown', onDialogEscPress);
+}
+// --------------------------------------------------------------------------------------------------------------------
+
+
+var ownersInfo = getApartments();
+
 /* размещение DOM-элементов на странице */
 function setMarketInfoList() {
-  var ownersInfo = getApartments();
+  // var ownersInfo = getApartments();
   var fragment = document.createDocumentFragment();
   var ownersAmount = ownersInfo.length;
-  createDescription(ownersInfo[0]);
+  // createDescription(ownersInfo[0]);
   for (var i = 0; i < ownersAmount; i++) {
-    fragment.appendChild(createPinDomElement(ownersInfo[i]));
+    fragment.appendChild(createPinDomElement(ownersInfo[i], i));
   }
   document.querySelector('.tokyo__pin-map').appendChild(fragment);
+  addPinListeners();
+  addDialogListener();
 }
 
 /* --------------------------------------------------------------------------------------------------------------------
