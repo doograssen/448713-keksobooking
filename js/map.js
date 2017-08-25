@@ -195,7 +195,7 @@ function addPinListeners() {
   var pinAmount = pinElements.length;
   for (var i = 0; i < pinAmount; i++) {
     var setEvent = closurePinIndex(i);
-    pinElements[i].addEventListener('click', setEvent, true);
+    pinElements[i].addEventListener('click', setEvent);
     pinElements[i].addEventListener('keydown', setEvent);
   }
 }
