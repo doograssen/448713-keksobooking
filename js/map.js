@@ -156,11 +156,13 @@ function createDescription(description) {
     ', выезд до ' + description.offer.checkout;
   element.querySelector('.lodge__features').innerHTML = getFeatures(description.offer.features);
   element.querySelector('.lodge__description').textContent = description.offer.description;
-  document.querySelector('.dialog__title').src = description.author.avatar;
   replacedElem.parentNode.replaceChild(element, replacedElem); // заменяем описание по умолчанию на описание первого объявления
+  document.querySelector('.dialog__title img').src = description.author.avatar;
 }
 
 /* -------- функции-слушатели событий  ----------------------------*/
+
+var dialog = document.querySelector('.dialog');
 
 // функция, которая делает пин активным
 function makeActivePin(e) {
@@ -175,12 +177,16 @@ function makeActivePin(e) {
   }
 }
 
-// функция, обработчик щелчка на пине
-function showDialogFunc(evt) {
-  makeActivePin(evt);
-  var currentPin = document.querySelector('.pin--active');
-  createDescription(ownersInfo[currentPin.dataset.index]);
-  document.querySelector('.dialog').classList.remove('hidden');
+// функция-оберка возращает функцию обработчик щелчка на пине с учетом индекса
+function closurePinIndex(index) {
+  return function (evt) {
+    if ((evt.type === 'keydown') && (evt.keyCode !== ENTER_KEYCODE)) {
+      return;
+    }
+    makeActivePin(evt);
+    createDescription(ownersInfo[index]);
+    dialog.classList.remove('hidden');
+  };
 }
 
 // функция создаия слушателей событий на пинах
@@ -188,18 +194,9 @@ function addPinListeners() {
   var pinElements = document.querySelectorAll('.pin');
   var pinAmount = pinElements.length;
   for (var i = 0; i < pinAmount; i++) {
-    pinElements[i].addEventListener('click', showDialogFunc, true);
-    pinElements[i].addEventListener('keydown', function (evt) {
-      if (evt.keyCode === ENTER_KEYCODE) {
-        showDialogFunc(evt);
-      }
-    });
-    pinElements[i].addEventListener('focus', function (evt) {
-      evt.target.classList.add('pin--active');
-    });
-    pinElements[i].addEventListener('blur', function (evt) {
-      evt.target.classList.remove('pin--active');
-    });
+    var setEvent = closurePinIndex(i);
+    pinElements[i].addEventListener('click', setEvent, true);
+    pinElements[i].addEventListener('keydown', setEvent);
   }
 }
 
@@ -212,7 +209,6 @@ var onDialogEscPress = function (evt) {
 
 // закрытие окна диалога  с описание  помещения
 function closeDialog() {
-  var dialog = document.querySelector('.dialog');
   dialog.classList.add('hidden');
   dialog.removeEventListener('click', onDialogEscPress);
   document.querySelector('.pin--active').classList.remove('pin--active');
@@ -226,19 +222,17 @@ function addDialogListener() {
 }
 // --------------------------------------------------------------------------------------------------------------------
 
-
-var ownersInfo = getApartments();
+var ownersInfo = getApartments();// глобальный массив с объктами
 
 /* размещение DOM-элементов на странице */
 function setMarketInfoList() {
-  // var ownersInfo = getApartments();
   var fragment = document.createDocumentFragment();
   var ownersAmount = ownersInfo.length;
-  // createDescription(ownersInfo[0]);
   for (var i = 0; i < ownersAmount; i++) {
     fragment.appendChild(createPinDomElement(ownersInfo[i], i));
   }
-  document.querySelector('.tokyo__pin-map').appendChild(fragment);
+  var defaultPin = document.querySelector('.pin__main');
+  document.querySelector('.tokyo__pin-map').insertBefore(fragment, defaultPin);
   addPinListeners();
   addDialogListener();
 }
