@@ -163,40 +163,42 @@ function createDescription(description) {
 /* -------- функции-слушатели событий  ----------------------------*/
 
 var dialog = document.querySelector('.dialog');
+var activePin;
 
 // функция, которая делает пин активным
 function makeActivePin(e) {
-  var activePin = document.querySelector('.pin--active');
   if (activePin) {
     activePin.classList.remove('pin--active');
   }
-  if (e.target.nodeName === 'IMG') {
-    e.target.parentNode.classList.add('pin--active');
-  } else {
-    e.target.classList.add('pin--active');
-  }
+  e.currentTarget.classList.add('pin--active');
+  activePin = e.currentTarget;
 }
 
 // функция-оберка возращает функцию обработчик щелчка на пине с учетом индекса
-function closurePinIndex(index) {
+function takePinInfoByIndex(index) {
   return function (evt) {
-    if ((evt.type === 'keydown') && (evt.keyCode !== ENTER_KEYCODE)) {
-      return;
-    }
     makeActivePin(evt);
     createDescription(ownersInfo[index]);
     dialog.classList.remove('hidden');
   };
 }
 
+// события на маркере с индексом index
+function addCurrentPinListeners(element, index) {
+  element.addEventListener('click', takePinInfoByIndex(index));
+  element.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === ENTER_KEYCODE) {
+      (takePinInfoByIndex(index))(evt);
+    }
+  });
+}
+
 // функция создаия слушателей событий на пинах
-function addPinListeners() {
+function addAllPinListeners() {
   var pinElements = document.querySelectorAll('.pin');
   var pinAmount = pinElements.length;
   for (var i = 0; i < pinAmount; i++) {
-    var setEvent = closurePinIndex(i);
-    pinElements[i].addEventListener('click', setEvent);
-    pinElements[i].addEventListener('keydown', setEvent);
+    addCurrentPinListeners(pinElements[i], i);
   }
 }
 
@@ -210,8 +212,7 @@ var onDialogEscPress = function (evt) {
 // закрытие окна диалога  с описание  помещения
 function closeDialog() {
   dialog.classList.add('hidden');
-  dialog.removeEventListener('click', onDialogEscPress);
-  document.querySelector('.pin--active').classList.remove('pin--active');
+  activePin.classList.remove('pin--active');
 }
 
 // функция добавления  слушателей событий  в диалоге
@@ -233,7 +234,7 @@ function setMarketInfoList() {
   }
   var defaultPin = document.querySelector('.pin__main');
   document.querySelector('.tokyo__pin-map').insertBefore(fragment, defaultPin);
-  addPinListeners();
+  addAllPinListeners();
   addDialogListener();
 }
 
