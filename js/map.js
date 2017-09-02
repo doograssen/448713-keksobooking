@@ -242,3 +242,84 @@ function setMarketInfoList() {
 *   Вызов функци-сеятеля пинов
 * -------------------------------------------------------------------------------------------------------------------*/
 setMarketInfoList();
+
+/* --------------------------------Валидация формы -------------------------------------------------------------------*/
+
+/* элементы  формы */
+var offerForm = document.querySelector('.form__content');
+var offerTitle = offerForm.querySelector('#title');
+var offerAddress = offerForm.querySelector('#address');
+var offerPrice = offerForm.querySelector('#price');
+var offerRoom = offerForm.querySelector('#room_number');
+var offerCapacity = offerForm.querySelector('#capacity');
+/* ассоциативный массив  стоимости и типа жилья */
+var offerMinPrice = {'bungalo': '0', 'flat': '1000', 'house': '5000', 'palace': '10000'};
+
+/*функция валидация input[type = 'text']*/
+function validateInput(min, max, numeric) {
+  return function (evt) {
+    var target = evt.target;
+    var inputValue = numeric ? parseFloat(target.value) : target.value.length;
+    if (min > 0 && inputValue <= min) {
+      target.setCustomValidity(numeric ? 'Значение в поле должно быть больше ' + min : 'Минимальная длина содержимого поля - ' + min);
+    } else if (max > min && inputValue >= max) {
+      target.setCustomValidity(numeric ? 'Значение в поле должно быть меньше ' + max : 'Максимальная длина содержимого поля ' + max + ' символов');
+    } else {
+      target.setCustomValidity('');
+    }
+  };
+}
+
+/*события ввода*/
+offerTitle.addEventListener('input', validateInput(30, 100, false));
+offerAddress.addEventListener('input', validateInput(0, 0, false));
+offerPrice.addEventListener('input', validateInput(offerPrice.attributes.min, offerPrice.attributes.max, true));
+
+/* синхронизация  времени въезда и выезда */
+offerForm.querySelector('#timein').addEventListener('change', function () {
+  var timeinIndex = event.target.options.selectedIndex;
+  offerForm.querySelector('#timeout').selectedIndex = timeinIndex;
+});
+
+offerForm.querySelector('#timeout').addEventListener('change', function () {
+  var timeoutIndex = event.target.options.selectedIndex;
+  offerForm.querySelector('#timein').selectedIndex = timeoutIndex;
+});
+
+/* стоимость и тип жилья */
+offerForm.querySelector('#type').addEventListener('change', function () {
+  var AppartmentTypes = event.target;
+  var typeIndex = AppartmentTypes.options.selectedIndex;
+  var typeValue = AppartmentTypes.options[typeIndex].value;
+  offerPrice.setAttribute('min', offerMinPrice[typeValue]);
+  offerPrice.value = offerMinPrice[typeValue];
+});
+
+/* количество комнат  и гостей*/
+function validateRoomSelect() {
+  var capacityLength = offerCapacity.options.length;
+  var roomCountIndex = offerRoom.options.selectedIndex;
+  var roomValue = parseInt(offerRoom.options[roomCountIndex].value, 10);
+  var setDefault = false;
+  for (var i = 0; i < capacityLength; i++) {
+    var capacityVal = parseInt(offerCapacity.options[i].value, 10);
+    if ((capacityVal > roomValue) || (roomValue !== 100 && capacityVal === 0) || (capacityVal > 0 && roomValue === 100)) {
+      offerCapacity.options[i].disabled = true;
+    } else {
+      offerCapacity.options[i].disabled = false;
+      if (!setDefault) {
+        offerCapacity.options[i].selected = true;
+        setDefault = !setDefault;
+      }
+    }
+  }
+}
+
+offerForm.querySelector('#room_number').addEventListener('change', function () {
+  validateRoomSelect();
+});
+
+window.onload = function () {
+  validateRoomSelect();
+};
+
