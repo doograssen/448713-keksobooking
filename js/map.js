@@ -255,7 +255,7 @@ var offerCapacity = offerForm.querySelector('#capacity');
 /* ассоциативный массив  стоимости и типа жилья */
 var offerMinPrice = {'bungalo': '0', 'flat': '1000', 'house': '5000', 'palace': '10000'};
 
-/*функция валидация input[type = 'text']*/
+/* функция валидация input[type = 'text'] */
 function validateInput(min, max, numeric) {
   return function (evt) {
     var target = evt.target;
@@ -270,7 +270,7 @@ function validateInput(min, max, numeric) {
   };
 }
 
-/*события ввода*/
+/* события ввода */
 offerTitle.addEventListener('input', validateInput(30, 100, false));
 offerAddress.addEventListener('input', validateInput(0, 0, false));
 offerPrice.addEventListener('input', validateInput(offerPrice.attributes.min, offerPrice.attributes.max, true));
