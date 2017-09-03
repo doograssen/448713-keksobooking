@@ -249,11 +249,14 @@ setMarketInfoList();
 var offerForm = document.querySelector('.form__content');
 var offerTitle = offerForm.querySelector('#title');
 var offerAddress = offerForm.querySelector('#address');
+var offerType = offerForm.querySelector('#type');
 var offerPrice = offerForm.querySelector('#price');
 var offerRoom = offerForm.querySelector('#room_number');
 var offerCapacity = offerForm.querySelector('#capacity');
+var offerTimeIn = offerForm.querySelector('#timein');
+var offerTimeOut = offerForm.querySelector('#timeout');
 /* ассоциативный массив  стоимости и типа жилья */
-var offerMinPrice = {'bungalo': '0', 'flat': '1000', 'house': '5000', 'palace': '10000'};
+var offerMinPrice = {'bungalo': 0, 'flat': 1000, 'house': 5000, 'palace': 10000};
 
 /* функция валидация input[type = 'text'] */
 function validateInput(min, max, numeric) {
@@ -273,44 +276,49 @@ function validateInput(min, max, numeric) {
 /* события ввода */
 offerTitle.addEventListener('input', validateInput(30, 100, false));
 offerAddress.addEventListener('input', validateInput(0, 0, false));
-offerPrice.addEventListener('input', validateInput(offerPrice.attributes.min, offerPrice.attributes.max, true));
+offerPrice.addEventListener('input', validateInput(offerPrice.min, offerPrice.max, true));
 
 /* синхронизация  времени въезда и выезда */
-offerForm.querySelector('#timein').addEventListener('change', function () {
-  var timeinIndex = event.target.options.selectedIndex;
-  offerForm.querySelector('#timeout').selectedIndex = timeinIndex;
+function synchronizeTime(sourse, dest) {
+  dest.selectedIndex = sourse.selectedIndex;
+}
+
+offerTimeIn.addEventListener('change', function (evt) {
+  var element = evt.target;
+  synchronizeTime(element, offerTimeOut);
 });
 
-offerForm.querySelector('#timeout').addEventListener('change', function () {
-  var timeoutIndex = event.target.options.selectedIndex;
-  offerForm.querySelector('#timein').selectedIndex = timeoutIndex;
+offerTimeOut.addEventListener('change', function (evt) {
+  var element = evt.target;
+  synchronizeTime(element, offerTimeIn);
 });
 
 /* стоимость и тип жилья */
-offerForm.querySelector('#type').addEventListener('change', function () {
-  var AppartmentTypes = event.target;
-  var typeIndex = AppartmentTypes.options.selectedIndex;
-  var typeValue = AppartmentTypes.options[typeIndex].value;
-  offerPrice.setAttribute('min', offerMinPrice[typeValue]);
-  offerPrice.value = offerMinPrice[typeValue];
+offerType.addEventListener('change', function (evt) {
+  var element = evt.target;
+  var minPriceValue = offerMinPrice[element.value];
+  offerPrice.min = minPriceValue;
+  if (offerPrice.value < minPriceValue) {
+    offerPrice.value = minPriceValue;
+  }
 });
 
 /* количество комнат  и гостей*/
 function validateRoomSelect() {
   var capacityLength = offerCapacity.options.length;
-  var roomCountIndex = offerRoom.options.selectedIndex;
-  var roomValue = parseInt(offerRoom.options[roomCountIndex].value, 10);
-  var setDefault = false;
+  var roomValue = parseInt(offerRoom.value, 10);
+  var currentCapacity = parseInt(offerCapacity.value, 10);
+  var setDefault = true;
   for (var i = 0; i < capacityLength; i++) {
     var capacityVal = parseInt(offerCapacity.options[i].value, 10);
     if ((capacityVal > roomValue) || (roomValue !== 100 && capacityVal === 0) || (capacityVal > 0 && roomValue === 100)) {
       offerCapacity.options[i].disabled = true;
     } else {
       offerCapacity.options[i].disabled = false;
-      if (!setDefault) {
+      if ((roomValue < currentCapacity || capacityVal === 0 || currentCapacity === 0) && setDefault) {
         offerCapacity.options[i].selected = true;
-        setDefault = !setDefault;
       }
+      setDefault = !setDefault;
     }
   }
 }
