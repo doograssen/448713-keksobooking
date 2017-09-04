@@ -166,18 +166,18 @@ var dialog = document.querySelector('.dialog');
 var activePin;
 
 // функция, которая делает пин активным
-function makeActivePin(e) {
+function makeActivePin(targetPin) {
   if (activePin) {
     activePin.classList.remove('pin--active');
   }
-  e.currentTarget.classList.add('pin--active');
-  activePin = e.currentTarget;
+  targetPin.classList.add('pin--active');
+  activePin = targetPin;
 }
 
 // функция-оберка возращает функцию обработчик щелчка на пине с учетом индекса
 function takePinInfoByIndex(index) {
   return function (evt) {
-    makeActivePin(evt);
+    makeActivePin(evt.currentTarget);
     createDescription(ownersInfo[index]);
     dialog.classList.remove('hidden');
   };
