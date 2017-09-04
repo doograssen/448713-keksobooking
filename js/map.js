@@ -308,14 +308,10 @@ function validateRoomSelect() {
   var setDefault = true;
   for (var i = 0; i < capacityLength; i++) {
     var capacityVal = parseInt(offerCapacity.options[i].value, 10);
-    if ((capacityVal > roomValue) || (roomValue !== 100 && capacityVal === 0) || (capacityVal > 0 && roomValue === 100)) {
-      offerCapacity.options[i].disabled = true;
-    } else {
-      offerCapacity.options[i].disabled = false;
-      if ((roomValue < currentCapacity || capacityVal === 0 || currentCapacity === 0) && setDefault) {
-        offerCapacity.options[i].selected = true;
-        setDefault = !setDefault;
-      }
+    offerCapacity.options[i].disabled = (capacityVal > roomValue) || (roomValue !== 100 && capacityVal === 0) || (capacityVal > 0 && roomValue === 100);
+    if ((roomValue < currentCapacity || capacityVal === 0 || currentCapacity === 0) && setDefault && !offerCapacity.options[i].disabled) {
+      offerCapacity.options[i].selected = true;
+      setDefault = !setDefault;
     }
   }
 }
