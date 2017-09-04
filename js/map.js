@@ -283,20 +283,17 @@ function synchronizeTime(sourse, dest) {
   dest.selectedIndex = sourse.selectedIndex;
 }
 
-offerTimeIn.addEventListener('change', function (evt) {
-  var element = evt.target;
-  synchronizeTime(element, offerTimeOut);
+offerTimeIn.addEventListener('change', function () {
+  synchronizeTime(offerTimeIn, offerTimeOut);
 });
 
-offerTimeOut.addEventListener('change', function (evt) {
-  var element = evt.target;
-  synchronizeTime(element, offerTimeIn);
+offerTimeOut.addEventListener('change', function () {
+  synchronizeTime(offerTimeOut, offerTimeIn);
 });
 
 /* стоимость и тип жилья */
-offerType.addEventListener('change', function (evt) {
-  var element = evt.target;
-  var minPriceValue = offerMinPrice[element.value];
+offerType.addEventListener('change', function () {
+  var minPriceValue = offerMinPrice[offerType.value];
   offerPrice.min = minPriceValue;
   if (offerPrice.value < minPriceValue) {
     offerPrice.value = minPriceValue;
@@ -317,8 +314,8 @@ function validateRoomSelect() {
       offerCapacity.options[i].disabled = false;
       if ((roomValue < currentCapacity || capacityVal === 0 || currentCapacity === 0) && setDefault) {
         offerCapacity.options[i].selected = true;
+        setDefault = !setDefault;
       }
-      setDefault = !setDefault;
     }
   }
 }

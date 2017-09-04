@@ -130,14 +130,14 @@
               <label for="type">Тип жилья</label>
               <select id="type" name="type">
                 <option value="flat" selected>Квартира</option>
-                <option value="bungalo">Лачуга</option>
+                <option value="bungalo" selected>Лачуга</option>
                 <option value="house">Дом</option>
                 <option value="palace">Дворец</option>
               </select>
             </div>
             <div class="form__element">
               <label for="price">Цена за ночь, руб.</label>
-              <input id="price" name="price" type="number" placeholder="5000" min="1000" max="1000000" step="100" required>
+              <input id="price" name="price" type="number" placeholder="5000" min="0" max="1000000" step="100" value = 1000 required>
             </div>
           </div>
           <div class="form__row">
