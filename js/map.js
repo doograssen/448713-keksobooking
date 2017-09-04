@@ -263,13 +263,13 @@ function validateInput(min, max, numeric) {
   return function (evt) {
     var target = evt.target;
     var inputValue = numeric ? parseFloat(target.value) : target.value.length;
+    var messageText = '';
     if (min > 0 && inputValue <= min) {
-      target.setCustomValidity(numeric ? 'Значение в поле должно быть больше ' + min : 'Минимальная длина содержимого поля - ' + min);
+      messageText = numeric ? 'Значение в поле должно быть больше ' + min : 'Минимальная длина содержимого поля - ' + min;
     } else if (max > min && inputValue >= max) {
-      target.setCustomValidity(numeric ? 'Значение в поле должно быть меньше ' + max : 'Максимальная длина содержимого поля ' + max + ' символов');
-    } else {
-      target.setCustomValidity('');
+      messageText = numeric ? 'Значение в поле должно быть меньше ' + max : 'Максимальная длина содержимого поля ' + max + ' символов';
     }
+    target.setCustomValidity(messageText);
   };
 }
 
@@ -279,8 +279,8 @@ offerAddress.addEventListener('input', validateInput(0, 0, false));
 offerPrice.addEventListener('input', validateInput(offerPrice.min, offerPrice.max, true));
 
 /* синхронизация  времени въезда и выезда */
-function synchronizeTime(sourse, dest) {
-  dest.selectedIndex = sourse.selectedIndex;
+function synchronizeTime(source, dest) {
+  dest.selectedIndex = source.selectedIndex;
 }
 
 offerTimeIn.addEventListener('change', function () {
