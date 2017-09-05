@@ -305,13 +305,11 @@ function validateRoomSelect() {
   var capacityLength = offerCapacity.options.length;
   var roomValue = parseInt(offerRoom.value, 10);
   var currentCapacity = parseInt(offerCapacity.value, 10);
-  var setDefault = true;
   for (var i = 0; i < capacityLength; i++) {
     var capacityVal = parseInt(offerCapacity.options[i].value, 10);
     offerCapacity.options[i].disabled = (capacityVal > roomValue) || (roomValue !== 100 && capacityVal === 0) || (capacityVal > 0 && roomValue === 100);
-    if ((roomValue < currentCapacity || capacityVal === 0 || currentCapacity === 0) && setDefault && !offerCapacity.options[i].disabled) {
+    if (!offerCapacity.options[i].disabled && (roomValue < currentCapacity || capacityVal === 0 || currentCapacity === 0)) {
       offerCapacity.options[i].selected = true;
-      setDefault = !setDefault;
     }
   }
 }
