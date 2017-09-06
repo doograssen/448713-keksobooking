@@ -96,8 +96,6 @@
 
   window.data = {
     /* массив объектов  с описание помещений от владельцев */
-    //dialog: document.querySelector('.dialog'),
-    activePin: '',
     getApartments: function () {
       var amount = 8; // кол-во объявлений
       var ownerGroup = []; // массив объектов с описанием помещений

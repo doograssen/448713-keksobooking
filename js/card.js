@@ -33,7 +33,7 @@
   // закрытие окна диалога  с описание  помещения
   function closeDialog() {
     dialog.classList.add('hidden');
-    window.data.activePin.classList.remove('pin--active');
+    window.pin.disactivatePin();
   }
 
 
