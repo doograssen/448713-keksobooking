@@ -49,7 +49,7 @@
   function getLocation() {
     return {
       x: getRandomFromRange(300, 900),
-      y: getRandomFromRange(200, 600)
+      y: getRandomFromRange(200, 650)
     };
   }
 

@@ -53,7 +53,7 @@
     },
     // функция создаия слушателей событий на пинах
     addAllPinListeners: function () {
-      var pinElements = document.querySelectorAll('.pin');
+      var pinElements = document.querySelectorAll('.pin:not(.pin__main)');
       var pinAmount = pinElements.length;
       for (var i = 0; i < pinAmount; i++) {
         addCurrentPinListeners(pinElements[i], i);
