@@ -9,7 +9,7 @@
   var ownersAmount = window.pin.ownersInfoArray.length;
   var defaultPin = document.querySelector('.pin__main');
   var defPinHeight = defaultPin.clientHeight;
-  var halfPin = defaultPin.clientWidth / 2;
+  var halfPin = Math.floor(defaultPin.clientWidth / 2);
   var topBorder = 200 - defPinHeight;
   var bottomBorder = 650 - defPinHeight;
   var mapWidth = document.querySelector('.tokyo').clientWidth;
@@ -55,16 +55,14 @@
       if (pinCenterBorder < 0) {
         pinCenterBorder = 0;
         defaultPin.style.left = -halfPin + 'px';
-      }
-      if (pinCenterBorder > mapWidth) {
+      } else if (pinCenterBorder > mapWidth) {
         pinCenterBorder = mapWidth;
         defaultPin.style.left = mapWidth - halfPin + 'px';
       }
       if (pinTopBorder < topBorder) {
         pinTopBorder = topBorder;
         defaultPin.style.top = topBorder + 'px';
-      }
-      if (pinTopBorder > bottomBorder) {
+      } else if (pinTopBorder > bottomBorder) {
         pinTopBorder = bottomBorder;
         defaultPin.style.top = bottomBorder + 'px';
       }
