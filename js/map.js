@@ -26,6 +26,8 @@
   /* Слушатель нажатия кнопки мыши */
   defaultPin.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
+    var pinLeftBorder = defaultPin.offsetLeft;
+    var pinTopBorder = defaultPin.offsetTop;
     var startCoords = {
       x: evt.clientX,
       y: evt.clientY
@@ -43,14 +45,13 @@
         x: moveEvt.clientX,
         y: moveEvt.clientY
       };
-
+      pinLeftBorder = defaultPin.offsetLeft;
+      pinTopBorder = defaultPin.offsetTop;
       defaultPin.style.top = (defaultPin.offsetTop - shift.y) + 'px';
       defaultPin.style.left = (defaultPin.offsetLeft - shift.x) + 'px';
     };
     /* функция при отпускании кнопки мыши */
     var onMouseUp = function (upEvt) {
-      var pinLeftBorder = defaultPin.offsetLeft;
-      var pinTopBorder = defaultPin.offsetTop;
       upEvt.preventDefault();
       if (pinLeftBorder < -halfPin) {
         pinLeftBorder = -halfPin;
