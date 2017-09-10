@@ -49,26 +49,24 @@
     };
     /* функция при отпускании кнопки мыши */
     var onMouseUp = function (upEvt) {
-      var pinCenterBorder = parseInt(defaultPin.style.left, 10) + halfPin;
+      var pinCenterXPoint = parseInt(defaultPin.style.left, 10) + halfPin;
       var pinTopBorder = parseInt(defaultPin.style.top, 10);
       upEvt.preventDefault();
-      if (pinCenterBorder < 0) {
-        pinCenterBorder = 0;
-        defaultPin.style.left = -halfPin + 'px';
-      } else if (pinCenterBorder > mapWidth) {
-        pinCenterBorder = mapWidth;
-        defaultPin.style.left = mapWidth - halfPin + 'px';
+      if (pinCenterXPoint < 0) {
+        pinCenterXPoint = 0;
+      } else if (pinCenterXPoint > mapWidth) {
+        pinCenterXPoint = mapWidth;
       }
       if (pinTopBorder < topBorder) {
         pinTopBorder = topBorder;
-        defaultPin.style.top = topBorder + 'px';
       } else if (pinTopBorder > bottomBorder) {
         pinTopBorder = bottomBorder;
-        defaultPin.style.top = bottomBorder + 'px';
       }
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
-      addressInput.value = 'x: ' + pinCenterBorder + ', y: ' + (pinTopBorder + defPinHeight);
+      defaultPin.style.left = pinCenterXPoint - halfPin + 'px';
+      defaultPin.style.top = pinTopBorder + 'px';
+      addressInput.value = 'x: ' + pinCenterXPoint + ', y: ' + (pinTopBorder + defPinHeight);
     };
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
