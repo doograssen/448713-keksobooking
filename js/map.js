@@ -1,9 +1,6 @@
 'use strict';
 
 (function () {
-  /* --------------------------------------------------------------------------------------------------------------------
-  *   Размещение пинов на карте
-  * -------------------------------------------------------------------------------------------------------------------*/
   /* размещение DOM-элементов на странице */
   var fragment = document.createDocumentFragment();
   var ownersAmount = window.pin.ownersInfoArray.length;
@@ -14,12 +11,21 @@
   var bottomBorder = 650 - defPinHeight;
   var mapWidth = document.querySelector('.tokyo').clientWidth - halfPin;
   var addressInput = document.querySelector('#address');
+  /* Изменение размера окна */
+  function resizeMapWidth() {
+    mapWidth = document.querySelector('.tokyo').clientWidth - halfPin;
+  }
+  window.addEventListener('resize', resizeMapWidth);
+  /* --------------------------------------------------------------------------------------------------------------------
+ *   Размещение пинов на карте
+ * -------------------------------------------------------------------------------------------------------------------*/
   for (var i = 0; i < ownersAmount; i++) {
     fragment.appendChild(window.pin.createPinDomElement(window.pin.ownersInfoArray[i], i));
   }
   document.querySelector('.tokyo__pin-map').insertBefore(fragment, defaultPin);
   window.pin.addAllPinListeners();
   window.card.addDialogListener();
+
   /* --------------------------------------------------------------------------------------------------------------------
  *   Перемещение пина по карте
  * -------------------------------------------------------------------------------------------------------------------*/
