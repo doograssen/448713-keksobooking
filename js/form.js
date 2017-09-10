@@ -41,43 +41,32 @@
     dest.selectedIndex = source.selectedIndex;
   }
 
-  offerTimeIn.addEventListener('change', function () {
-    synchronizeTime(offerTimeIn, offerTimeOut);
-  });
-
-  offerTimeOut.addEventListener('change', function () {
-    synchronizeTime(offerTimeOut, offerTimeIn);
-  });
-
-  /* стоимость и тип жилья */
-  offerType.addEventListener('change', function () {
-    var minPriceValue = offerMinPrice[offerType.value];
-    offerPrice.min = minPriceValue;
-    if (offerPrice.value < minPriceValue) {
-      offerPrice.value = minPriceValue;
-    }
-  });
-
-  /* количество комнат  и гостей*/
-  function validateRoomSelect() {
-    var capacityLength = offerCapacity.options.length;
-    var roomValue = parseInt(offerRoom.value, 10);
-    var currentCapacity = parseInt(offerCapacity.value, 10);
-    for (var i = 0; i < capacityLength; i++) {
-      var capacityVal = parseInt(offerCapacity.options[i].value, 10);
-      offerCapacity.options[i].disabled = (capacityVal > roomValue) || (roomValue !== 100 && capacityVal === 0) || (capacityVal > 0 && roomValue === 100);
-      if (!offerCapacity.options[i].disabled && (roomValue < currentCapacity || capacityVal === 0 || currentCapacity === 0)) {
-        offerCapacity.options[i].selected = true;
-      }
+  function synchronizePrice(source, dest) {
+    var minPriceValue = offerMinPrice[source.value];
+    dest.min = minPriceValue;
+    if (dest.value < minPriceValue) {
+      dest.value = minPriceValue;
     }
   }
 
-  offerForm.querySelector('#room_number').addEventListener('change', function () {
-    validateRoomSelect();
-  });
-
+  function validateRoomSelect(source, dest) {
+    var capacityLength = dest.options.length;
+    var roomValue = parseInt(source.value, 10);
+    var currentCapacity = parseInt(dest.value, 10);
+    for (var i = 0; i < capacityLength; i++) {
+      var capacityVal = parseInt(dest.options[i].value, 10);
+      dest.options[i].disabled = (capacityVal > roomValue) || (roomValue !== 100 && capacityVal === 0) || (capacityVal > 0 && roomValue === 100);
+      if (!dest.options[i].disabled && (roomValue < currentCapacity || capacityVal === 0 || currentCapacity === 0)) {
+        dest.options[i].selected = true;
+      }
+    }
+  }
+  window.synchronizeFields(offerTimeOut, offerTimeIn, synchronizeTime);
+  window.synchronizeFields(offerTimeIn, offerTimeOut, synchronizeTime);
+  window.synchronizeFields(offerType, offerPrice, synchronizePrice);
+  window.synchronizeFields(offerRoom, offerCapacity, validateRoomSelect);
   window.onload = function () {
-    validateRoomSelect();
+    validateRoomSelect(offerRoom, offerCapacity);
   };
 })();
 
