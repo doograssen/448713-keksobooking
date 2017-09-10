@@ -1,9 +1,6 @@
 'use strict';
 
 (function () {
-  /* --------------------------------------------------------------------------------------------------------------------
-  *   Размещение пинов на карте
-  * -------------------------------------------------------------------------------------------------------------------*/
   /* размещение DOM-элементов на странице */
   var fragment = document.createDocumentFragment();
   var ownersAmount = window.pin.ownersInfoArray.length;
@@ -12,20 +9,31 @@
   var halfPin = Math.floor(defaultPin.clientWidth / 2);
   var topBorder = 200 - defPinHeight;
   var bottomBorder = 650 - defPinHeight;
-  var mapWidth = document.querySelector('.tokyo').clientWidth;
+  var mapWidth = document.querySelector('.tokyo').clientWidth - halfPin;
   var addressInput = document.querySelector('#address');
+  /* Изменение размера окна */
+  function resizeMapWidth() {
+    mapWidth = document.querySelector('.tokyo').clientWidth - halfPin;
+  }
+  window.addEventListener('resize', resizeMapWidth);
+  /* --------------------------------------------------------------------------------------------------------------------
+ *   Размещение пинов на карте
+ * -------------------------------------------------------------------------------------------------------------------*/
   for (var i = 0; i < ownersAmount; i++) {
     fragment.appendChild(window.pin.createPinDomElement(window.pin.ownersInfoArray[i], i));
   }
   document.querySelector('.tokyo__pin-map').insertBefore(fragment, defaultPin);
   window.pin.addAllPinListeners();
   window.card.addDialogListener();
+
   /* --------------------------------------------------------------------------------------------------------------------
  *   Перемещение пина по карте
  * -------------------------------------------------------------------------------------------------------------------*/
   /* Слушатель нажатия кнопки мыши */
   defaultPin.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
+    var pinLeftBorder = defaultPin.offsetLeft;
+    var pinTopBorder = defaultPin.offsetTop;
     var startCoords = {
       x: evt.clientX,
       y: evt.clientY
@@ -43,19 +51,18 @@
         x: moveEvt.clientX,
         y: moveEvt.clientY
       };
-
-      defaultPin.style.top = (defaultPin.offsetTop - shift.y) + 'px';
-      defaultPin.style.left = (defaultPin.offsetLeft - shift.x) + 'px';
+      pinLeftBorder = defaultPin.offsetLeft;
+      pinTopBorder = defaultPin.offsetTop;
+      defaultPin.style.top = (pinTopBorder - shift.y) + 'px';
+      defaultPin.style.left = (pinLeftBorder - shift.x) + 'px';
     };
     /* функция при отпускании кнопки мыши */
     var onMouseUp = function (upEvt) {
-      var pinCenterXPoint = parseInt(defaultPin.style.left, 10) + halfPin;
-      var pinTopBorder = parseInt(defaultPin.style.top, 10);
       upEvt.preventDefault();
-      if (pinCenterXPoint < 0) {
-        pinCenterXPoint = 0;
-      } else if (pinCenterXPoint > mapWidth) {
-        pinCenterXPoint = mapWidth;
+      if (pinLeftBorder < -halfPin) {
+        pinLeftBorder = -halfPin;
+      } else if (pinLeftBorder > mapWidth) {
+        pinLeftBorder = mapWidth;
       }
       if (pinTopBorder < topBorder) {
         pinTopBorder = topBorder;
@@ -64,9 +71,9 @@
       }
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
-      defaultPin.style.left = pinCenterXPoint - halfPin + 'px';
+      defaultPin.style.left = pinLeftBorder + 'px';
       defaultPin.style.top = pinTopBorder + 'px';
-      addressInput.value = 'x: ' + pinCenterXPoint + ', y: ' + (pinTopBorder + defPinHeight);
+      addressInput.value = 'x: ' + (pinLeftBorder + halfPin) + ', y: ' + (pinTopBorder + defPinHeight);
     };
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
