@@ -2,8 +2,6 @@
 
 (function () {
   var ENTER_KEYCODE = 13;
-  var dialog = document.querySelector('.dialog');
-  var ownersInfo = window.data.getApartments();// глобальный массив с объктами
   var activePin;
 
   // функция, которая делает пин активным
@@ -19,8 +17,7 @@
   function takePinInfoByIndex(index) {
     return function (evt) {
       makeActivePin(evt.currentTarget);
-      window.card.createDescription(ownersInfo[index]);
-      dialog.classList.remove('hidden');
+      window.showCard(index);
     };
   }
 
@@ -35,7 +32,7 @@
   }
 
   window.pin = {
-    ownersInfoArray: ownersInfo,
+    ownersInfoArray: window.data.getApartments(),
     disactivatePin: function () {
       activePin.classList.remove('pin--active');
     },
