@@ -47,8 +47,8 @@
       };
       pinLeftBorder = defaultPin.offsetLeft;
       pinTopBorder = defaultPin.offsetTop;
-      defaultPin.style.top = (defaultPin.offsetTop - shift.y) + 'px';
-      defaultPin.style.left = (defaultPin.offsetLeft - shift.x) + 'px';
+      defaultPin.style.top = (pinTopBorder - shift.y) + 'px';
+      defaultPin.style.left = (pinLeftBorder - shift.x) + 'px';
     };
     /* функция при отпускании кнопки мыши */
     var onMouseUp = function (upEvt) {
