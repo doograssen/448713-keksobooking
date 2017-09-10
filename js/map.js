@@ -12,7 +12,7 @@
   var halfPin = Math.floor(defaultPin.clientWidth / 2);
   var topBorder = 200 - defPinHeight;
   var bottomBorder = 650 - defPinHeight;
-  var mapWidth = document.querySelector('.tokyo').clientWidth;
+  var mapWidth = document.querySelector('.tokyo').clientWidth - halfPin;
   var addressInput = document.querySelector('#address');
   for (var i = 0; i < ownersAmount; i++) {
     fragment.appendChild(window.pin.createPinDomElement(window.pin.ownersInfoArray[i], i));
@@ -49,13 +49,13 @@
     };
     /* функция при отпускании кнопки мыши */
     var onMouseUp = function (upEvt) {
-      var pinCenterXPoint = parseInt(defaultPin.style.left, 10) + halfPin;
-      var pinTopBorder = parseInt(defaultPin.style.top, 10);
+      var pinLeftBorder = defaultPin.offsetLeft;
+      var pinTopBorder = defaultPin.offsetTop;
       upEvt.preventDefault();
-      if (pinCenterXPoint < 0) {
-        pinCenterXPoint = 0;
-      } else if (pinCenterXPoint > mapWidth) {
-        pinCenterXPoint = mapWidth;
+      if (pinLeftBorder < -halfPin) {
+        pinLeftBorder = -halfPin;
+      } else if (pinLeftBorder > mapWidth) {
+        pinLeftBorder = mapWidth;
       }
       if (pinTopBorder < topBorder) {
         pinTopBorder = topBorder;
@@ -64,9 +64,9 @@
       }
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
-      defaultPin.style.left = pinCenterXPoint - halfPin + 'px';
+      defaultPin.style.left = pinLeftBorder + 'px';
       defaultPin.style.top = pinTopBorder + 'px';
-      addressInput.value = 'x: ' + pinCenterXPoint + ', y: ' + (pinTopBorder + defPinHeight);
+      addressInput.value = 'x: ' + (pinLeftBorder + halfPin) + ', y: ' + (pinTopBorder + defPinHeight);
     };
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
