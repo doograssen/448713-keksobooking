@@ -61,44 +61,10 @@
       }
     }
   }
-  /* offerTimeIn.addEventListener('change', function () {
-    synchronizeTime(offerTimeIn, offerTimeOut);
-  });
-
-  offerTimeOut.addEventListener('change', function () {
-    synchronizeTime(offerTimeOut, offerTimeIn);
-  });*/
   window.synchronizeFields(offerTimeOut, offerTimeIn, synchronizeTime);
   window.synchronizeFields(offerTimeIn, offerTimeOut, synchronizeTime);
-  /* стоимость и тип жилья */
   window.synchronizeFields(offerType, offerPrice, synchronizePrice);
   window.synchronizeFields(offerRoom, offerCapacity, validateRoomSelect);
-  /* offerType.addEventListener('change', function () {
-    var minPriceValue = offerMinPrice[offerType.value];
-    offerPrice.min = minPriceValue;
-    if (offerPrice.value < minPriceValue) {
-      offerPrice.value = minPriceValue;
-    }
-  }); */
-
-  /* количество комнат  и гостей*/
-  /* function validateRoomSelect() {
-    var capacityLength = offerCapacity.options.length;
-    var roomValue = parseInt(offerRoom.value, 10);
-    var currentCapacity = parseInt(offerCapacity.value, 10);
-    for (var i = 0; i < capacityLength; i++) {
-      var capacityVal = parseInt(offerCapacity.options[i].value, 10);
-      offerCapacity.options[i].disabled = (capacityVal > roomValue) || (roomValue !== 100 && capacityVal === 0) || (capacityVal > 0 && roomValue === 100);
-      if (!offerCapacity.options[i].disabled && (roomValue < currentCapacity || capacityVal === 0 || currentCapacity === 0)) {
-        offerCapacity.options[i].selected = true;
-      }
-    }
-  }*/
-
- /* offerForm.querySelector('#room_number').addEventListener('change', function () {
-    validateRoomSelect();
-  });
-*/
   window.onload = function () {
     validateRoomSelect(offerRoom, offerCapacity);
   };
