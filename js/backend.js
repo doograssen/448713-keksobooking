@@ -2,7 +2,6 @@
 
 (function () {
   var sendURL = 'https://1510.dump.academy/keksobooking';
-  var dataURL = 'https://1510.dump.academy/keksobooking/data';
   /* --------------функция  с общими данными для создания запроса --------------*/
   var setupXHR = function (onLoad, onError) {
     var xhr = new XMLHttpRequest();
@@ -29,7 +28,7 @@
   window.backend = {
     load: function (onLoad, onError) { // Загрузка данных
       var xhr = setupXHR(onLoad, onError);
-      xhr.open('GET', dataURL);
+      xhr.open('GET', sendURL + '/data');
       xhr.send();
     },
     save: function (data, onLoad, onError) { // отпрвка данных

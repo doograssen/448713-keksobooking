@@ -14,11 +14,11 @@
   }
 
   /* ----------------------- Элементы-значки удобств -----------------------------------------------*/
-  function getFeatures(featuresList) {
-    var listLength = featuresList.length;
+  function getFeatures(features) {
+    var listLength = features.length;
     var featureString = '';
     for (var i = 0; i < listLength; i++) {
-      featureString += '<span class="feature__image feature__image--' + featuresList[i] + '"></span>';
+      featureString += '<span class="feature__image feature__image--' + features[i] + '"></span>';
     }
     return featureString;
   }
