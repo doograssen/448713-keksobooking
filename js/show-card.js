@@ -2,8 +2,8 @@
 
 (function () {
   var dialog = document.querySelector('.dialog');
-  window.showCard = function (index) {
-    window.card.createDescription(window.pin.ownersInfoArray[index]);
+  window.showCard = function (ownerInfo) {
+    window.card.createDescription(ownerInfo);
     dialog.classList.remove('hidden');
   };
 })();

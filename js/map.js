@@ -2,8 +2,7 @@
 
 (function () {
   /* размещение DOM-элементов на странице */
-  var fragment = document.createDocumentFragment();
-  var ownersAmount = window.pin.ownersInfoArray.length;
+
   var defaultPin = document.querySelector('.pin__main');
   var defPinHeight = defaultPin.clientHeight;
   var halfPin = Math.floor(defaultPin.clientWidth / 2);
@@ -19,11 +18,26 @@
   /* --------------------------------------------------------------------------------------------------------------------
  *   Размещение пинов на карте
  * -------------------------------------------------------------------------------------------------------------------*/
-  for (var i = 0; i < ownersAmount; i++) {
-    fragment.appendChild(window.pin.createPinDomElement(window.pin.ownersInfoArray[i], i));
-  }
-  document.querySelector('.tokyo__pin-map').insertBefore(fragment, defaultPin);
-  window.pin.addAllPinListeners();
+ /* -------------------------------------------------------------------------------------------------------------
+  ----------------------XHR --------------------------------------------------------------------------------*/
+  var ownersInfo;
+  var successHandler = function (response) {
+    ownersInfo = response;
+    window.pin.setPinArrayOnMap(ownersInfo);
+  };
+
+  var errorHandler = function (errorMessage) {
+    var node = document.createElement('div');
+    node.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: red;';
+    node.style.position = 'absolute';
+    node.style.left = 0;
+    node.style.right = 0;
+    node.style.fontSize = '30px';
+
+    node.textContent = errorMessage;
+    document.body.insertAdjacentElement('afterbegin', node);
+  };
+  window.backend.load(successHandler, errorHandler);
   window.card.addDialogListener();
 
   /* --------------------------------------------------------------------------------------------------------------------
