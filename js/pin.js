@@ -1,10 +1,10 @@
 'use strict';
 
 (function () {
-  var ENTER_KEYCODE = 13;
-  var activePin;
+  var ENTER_KEYCODE = 13; // ----------- Код клавиши ENTER----------------
+  var activePin; // ----------- Активный Пин ------------
 
-  // функция, которая делает пин активным
+  // ------------------------ Функция, которая делает пин активным ---------------------------
   function makeActivePin(targetPin) {
     if (activePin) {
       activePin.classList.remove('pin--active');
@@ -13,7 +13,7 @@
     activePin = targetPin;
   }
 
-  // функция-оберка возращает функцию обработчик щелчка на пине с учетом индекса
+  // ----------------------- Функция-оберка возращает функцию обработчик щелчка на пине-------
   function takePinInfoByIndex(ownerInfo) {
     return function (evt) {
       makeActivePin(evt.currentTarget);
@@ -21,7 +21,7 @@
     };
   }
 
-  // события на маркере с индексом index
+  // ------------------------- События на конкретном маркере  --------------------------------
   function addCurrentPinListeners(element, ownerInfo) {
     element.addEventListener('click', takePinInfoByIndex(ownerInfo));
     element.addEventListener('keydown', function (evt) {
@@ -30,6 +30,7 @@
       }
     });
   }
+  // -------------------------- Описание DOM очередного пина ----------------------------------
   function createPinDomElement(oneOfOwners) {
     var pinElement = document.createElement('div');
     pinElement.className = 'pin';
@@ -40,11 +41,12 @@
     pinElement.tabIndex = 0;
     return pinElement;
   }
+  // --------------- Экспортируемые функции модуля---------------------------------------------
   window.pin = {
     disactivatePin: function () {
       activePin.classList.remove('pin--active');
     },
-    // расстановка элементов пинов на карте
+    // -------------- Расстановка элементов пинов на карте--------------------------------------
     setPinArrayOnMap: function (ownersInfo) {
       var defaultPin = document.querySelector('.pin__main');
       var fragment = document.createDocumentFragment();
@@ -57,13 +59,5 @@
 
       document.querySelector('.tokyo__pin-map').insertBefore(fragment, defaultPin);
     }
-    // функция создаия слушателей событий на пинах
-    /* addAllPinListeners: function () {
-      var pinElements = document.querySelectorAll('.pin:not(.pin__main)');
-      var pinAmount = pinElements.length;
-      for (var i = 0; i < pinAmount; i++) {
-
-      }
-    } */
   };
 })();

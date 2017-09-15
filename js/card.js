@@ -3,7 +3,7 @@
 (function () {
   var ESC_KEYCODE = 27;
   var dialog = document.querySelector('.dialog');
-  /* тип помещения */
+  /* --------------------- Тип помещения ------------------------------*/
   function getType(type) {
     switch (type) {
       case 'flat': return 'Квартира';
@@ -13,7 +13,7 @@
     return false;
   }
 
-  /* элементы-значки удобств */
+  /* ----------------------- Элементы-значки удобств -----------------------------------------------*/
   function getFeatures(featuresList) {
     var listLength = featuresList.length;
     var featureString = '';
@@ -23,22 +23,21 @@
     return featureString;
   }
 
-  // нажатие ESC
+  // ----------------------------- Нажатие ESC  ----------------------------------------------------
   var onDialogEscPress = function (evt) {
     if (evt.keyCode === ESC_KEYCODE) {
       closeDialog();
     }
   };
 
-  // закрытие окна диалога  с описание  помещения
+  // -------------------- Закрытие окна диалога  с описание  помещения -----------------------------
   function closeDialog() {
     dialog.classList.add('hidden');
     window.pin.disactivatePin();
   }
 
-
   window.card = {
-    /* блок с описанием помещения */
+    /* ------------------- блок с описанием помещения ----------------------------------------------*/
     createDescription: function (description) {
       var replacedElem = document.querySelector('.dialog__panel');
       var template = document.querySelector('#lodge-template');
@@ -56,7 +55,7 @@
       replacedElem.parentNode.replaceChild(element, replacedElem); // заменяем описание по умолчанию на описание первого объявления
       document.querySelector('.dialog__title img').src = description.author.avatar;
     },
-    // функция добавления  слушателей событий  в диалоге
+    // --------------- функция добавления  слушателей событий  в диалоге ---------------------------
     addDialogListener: function () {
       var closeDialogElem = document.querySelector('.dialog__close');
       closeDialogElem.addEventListener('click', closeDialog);

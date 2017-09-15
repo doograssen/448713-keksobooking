@@ -3,6 +3,7 @@
 (function () {
   var sendURL = 'https://1510.dump.academy/keksobooking';
   var dataURL = 'https://1510.dump.academy/keksobooking/data';
+  /* --------------функция  с общими данными для создания запроса --------------*/
   var setupXHR = function (onLoad, onError) {
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
@@ -22,21 +23,28 @@
     });
 
     xhr.timeout = 10000; // 10s
-
     return xhr;
   };
 
   window.backend = {
-    load: function (onLoad, onError) {
+    load: function (onLoad, onError) { // Загрузка данных
       var xhr = setupXHR(onLoad, onError);
       xhr.open('GET', dataURL);
       xhr.send();
     },
-    save: function (data, onLoad, onError) {
+    save: function (data, onLoad, onError) { // отпрвка данных
       var xhr = setupXHR(onLoad, onError);
 
       xhr.open('POST', sendURL);
       xhr.send(data);
+    },
+    serverError: function (errorMessage) { // функция обратного вызова возникновения ошибки  при выполнении запроса
+      var errorMessageBlock = document.createElement('div');
+      var errorText = document.createElement('p');
+      errorMessageBlock.appendChild(errorText);
+      errorMessageBlock.classList.add('error-message-block');
+      errorText.textContent = errorMessage;
+      document.body.insertAdjacentElement('afterbegin', errorMessageBlock);
     }
   };
 })();

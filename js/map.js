@@ -2,7 +2,6 @@
 
 (function () {
   /* размещение DOM-элементов на странице */
-
   var defaultPin = document.querySelector('.pin__main');
   var defPinHeight = defaultPin.clientHeight;
   var halfPin = Math.floor(defaultPin.clientWidth / 2);
@@ -15,35 +14,22 @@
     mapWidth = document.querySelector('.tokyo').clientWidth - halfPin;
   }
   window.addEventListener('resize', resizeMapWidth);
-  /* --------------------------------------------------------------------------------------------------------------------
- *   Размещение пинов на карте
- * -------------------------------------------------------------------------------------------------------------------*/
- /* -------------------------------------------------------------------------------------------------------------
-  ----------------------XHR --------------------------------------------------------------------------------*/
+
+  /* -------------------------------------------------------------------------------------------------------------
+  ----------------------XHR -----------------------------------------------------------------------------------------*/
   var ownersInfo;
-  var successHandler = function (response) {
+  /* --- функция обратного вызова при успешном выполнении запроса ---------------------------*/
+  var successXHRExecution = function (response) {
     ownersInfo = response;
     window.pin.setPinArrayOnMap(ownersInfo);
   };
-
-  var errorHandler = function (errorMessage) {
-    var node = document.createElement('div');
-    node.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: red;';
-    node.style.position = 'absolute';
-    node.style.left = 0;
-    node.style.right = 0;
-    node.style.fontSize = '30px';
-
-    node.textContent = errorMessage;
-    document.body.insertAdjacentElement('afterbegin', node);
-  };
-  window.backend.load(successHandler, errorHandler);
+  /* -----запрос загрузки данных-------------------------------------------------------------*/
+  window.backend.load(successXHRExecution, window.backend.serverError);
   window.card.addDialogListener();
-
   /* --------------------------------------------------------------------------------------------------------------------
  *   Перемещение пина по карте
  * -------------------------------------------------------------------------------------------------------------------*/
-  /* Слушатель нажатия кнопки мыши */
+  /* --------------------- Слушатель нажатия кнопки мыши ------------------------------------*/
   defaultPin.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
     var pinLeftBorder = defaultPin.offsetLeft;
@@ -52,7 +38,7 @@
       x: evt.clientX,
       y: evt.clientY
     };
-    /* функция при перемещение мыши */
+    /* -------------функция при перемещение мыши --------------------------------------------*/
     var onMouseMove = function (moveEvt) {
       moveEvt.preventDefault();
 
@@ -70,7 +56,7 @@
       defaultPin.style.top = (pinTopBorder - shift.y) + 'px';
       defaultPin.style.left = (pinLeftBorder - shift.x) + 'px';
     };
-    /* функция при отпускании кнопки мыши */
+    /* -------------функция при отпускании кнопки мыши  -------------------------------------*/
     var onMouseUp = function (upEvt) {
       upEvt.preventDefault();
       if (pinLeftBorder < -halfPin) {
