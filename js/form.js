@@ -1,9 +1,10 @@
 'use strict';
 
 (function () {
-  /* --------------------------------Валидация формы -------------------------------------------------------------------*/
+  /* --------------------------------Валидация формы -----------------------------------------------------------------*/
 
-  /* элементы  формы */
+  /* -----------------элементы  формы -----------------------------------------------*/
+  var ownerDataForm = document.querySelector('.notice__form');
   var offerForm = document.querySelector('.form__content');
   var offerTitle = offerForm.querySelector('#title');
   var offerAddress = offerForm.querySelector('#address');
@@ -15,8 +16,15 @@
   var offerTimeOut = offerForm.querySelector('#timeout');
   /* ассоциативный массив  стоимости и типа жилья */
   var offerMinPrice = {'bungalo': 0, 'flat': 1000, 'house': 5000, 'palace': 10000};
+  // параметры дефолтного пина
+  var defaultPin = document.querySelector('.pin__main');
+  var defaultPinXCoordinate = defaultPin.offsetLeft;
+  var defaultPinYCoordinate = defaultPin.offsetTop;
+  var defPinHeight = defaultPin.clientHeight;
+  var halfPin = Math.floor(defaultPin.clientWidth / 2);
+  var addressInput = document.querySelector('#address');
 
-  /* функция валидация input[type = 'text'] */
+  /* ------------ функция валидация input[type = 'text'] ----------------------------*/
   function validateInput(min, max, numeric) {
     return function (evt) {
       var target = evt.target;
@@ -31,12 +39,12 @@
     };
   }
 
-  /* события ввода */
+  /* ----------------события ввода --------------------------------------------------*/
   offerTitle.addEventListener('input', validateInput(30, 100, false));
   offerAddress.addEventListener('input', validateInput(0, 0, false));
   offerPrice.addEventListener('input', validateInput(offerPrice.min, offerPrice.max, true));
 
-  /* синхронизация  времени въезда и выезда */
+  /* -------------- синхронизация  времени въезда и выезда ---------------------------*/
   function synchronizeTime(source, dest) {
     dest.selectedIndex = source.selectedIndex;
   }
@@ -61,12 +69,33 @@
       }
     }
   }
+
+  // --------------------------- вывод координат в поле адреса--------------------------
+  function setDefaultPinCoordinates(x, y) {
+    return 'x: ' + (x + halfPin) + ', y: ' + (y + defPinHeight);
+  }
+
+
   window.synchronizeFields(offerTimeOut, offerTimeIn, synchronizeTime);
   window.synchronizeFields(offerTimeIn, offerTimeOut, synchronizeTime);
   window.synchronizeFields(offerType, offerPrice, synchronizePrice);
   window.synchronizeFields(offerRoom, offerCapacity, validateRoomSelect);
   window.onload = function () {
     validateRoomSelect(offerRoom, offerCapacity);
+    addressInput.value = setDefaultPinCoordinates(defaultPin.offsetLeft, defaultPin.offsetTop);
   };
+
+  // ресет данных формы
+  function resetForm() {
+    ownerDataForm.reset();
+    defaultPin.style.left = defaultPinXCoordinate + 'px';
+    defaultPin.style.top = defaultPinYCoordinate + 'px';
+    addressInput.value = setDefaultPinCoordinates(defaultPinXCoordinate, defaultPinYCoordinate);
+  }
+
+  ownerDataForm.addEventListener('submit', function (evt) {
+    window.backend.save(new FormData(ownerDataForm), resetForm, window.backend.serverError);
+    evt.preventDefault();
+  });
 })();
 

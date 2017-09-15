@@ -2,8 +2,6 @@
 
 (function () {
   /* размещение DOM-элементов на странице */
-  var fragment = document.createDocumentFragment();
-  var ownersAmount = window.pin.ownersInfoArray.length;
   var defaultPin = document.querySelector('.pin__main');
   var defPinHeight = defaultPin.clientHeight;
   var halfPin = Math.floor(defaultPin.clientWidth / 2);
@@ -16,20 +14,22 @@
     mapWidth = document.querySelector('.tokyo').clientWidth - halfPin;
   }
   window.addEventListener('resize', resizeMapWidth);
-  /* --------------------------------------------------------------------------------------------------------------------
- *   Размещение пинов на карте
- * -------------------------------------------------------------------------------------------------------------------*/
-  for (var i = 0; i < ownersAmount; i++) {
-    fragment.appendChild(window.pin.createPinDomElement(window.pin.ownersInfoArray[i], i));
-  }
-  document.querySelector('.tokyo__pin-map').insertBefore(fragment, defaultPin);
-  window.pin.addAllPinListeners();
-  window.card.addDialogListener();
 
+  /* -------------------------------------------------------------------------------------------------------------
+  ----------------------XHR -----------------------------------------------------------------------------------------*/
+  var ownersInfo;
+  /* --- функция обратного вызова при успешном выполнении запроса ---------------------------*/
+  var successXHRExecution = function (response) {
+    ownersInfo = response;
+    window.pin.setPinArrayOnMap(ownersInfo);
+  };
+  /* -----запрос загрузки данных-------------------------------------------------------------*/
+  window.backend.load(successXHRExecution, window.backend.serverError);
+  window.card.addDialogListener();
   /* --------------------------------------------------------------------------------------------------------------------
  *   Перемещение пина по карте
  * -------------------------------------------------------------------------------------------------------------------*/
-  /* Слушатель нажатия кнопки мыши */
+  /* --------------------- Слушатель нажатия кнопки мыши ------------------------------------*/
   defaultPin.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
     var pinLeftBorder = defaultPin.offsetLeft;
@@ -38,7 +38,7 @@
       x: evt.clientX,
       y: evt.clientY
     };
-    /* функция при перемещение мыши */
+    /* -------------функция при перемещение мыши --------------------------------------------*/
     var onMouseMove = function (moveEvt) {
       moveEvt.preventDefault();
 
@@ -56,7 +56,7 @@
       defaultPin.style.top = (pinTopBorder - shift.y) + 'px';
       defaultPin.style.left = (pinLeftBorder - shift.x) + 'px';
     };
-    /* функция при отпускании кнопки мыши */
+    /* -------------функция при отпускании кнопки мыши  -------------------------------------*/
     var onMouseUp = function (upEvt) {
       upEvt.preventDefault();
       if (pinLeftBorder < -halfPin) {
